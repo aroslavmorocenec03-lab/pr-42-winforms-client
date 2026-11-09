@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  PostService.CommonTypes -> PostServiceSolution\PostService.CommonTypes\bin\Debug\net10.0\PostService.CommonTypes.dll
+  PostService.Dtos -> PostServiceSolution\PostService.Dtos\bin\Debug\net10.0\PostService.Dtos.dll
+  PostService.Models -> PostServiceSolution\PostService.Models\bin\Debug\net10.0\PostService.Models.dll
+  PostService.DataAccess -> PostServiceSolution\PostService.DataAccess\bin\Debug\net10.0\PostService.DataAccess.dll
+  PostService.BusinessLogic -> PostServiceSolution\PostService.BusinessLogic\bin\Debug\net10.0\PostService.BusinessLogic.dll
+  PostService -> PostServiceSolution\PostService\bin\Debug\net10.0\PostService.dll
+  PostService.App -> PostServiceSolution\PostService.App\bin\Debug\net10.0-windows\PostService.App.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.05
