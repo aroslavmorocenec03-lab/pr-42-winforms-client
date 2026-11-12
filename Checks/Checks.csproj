@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../PostServiceSolution/PostService.Dtos/PostService.Dtos.csproj" />
+    <Compile Include="../PostServiceSolution/PostService.App/PostingInput.cs" Link="PostingInput.cs" />
+    <Compile Include="../PostServiceSolution/PostService.App/PostServiceApi.cs" Link="PostServiceApi.cs" />
+  </ItemGroup>
+</Project>

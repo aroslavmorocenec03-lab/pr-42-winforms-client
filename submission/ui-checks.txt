@@ -1,0 +1,16 @@
+PASS UI 01: Isolated database starts empty
+PASS UI 02: Empty list and selection buttons
+PASS UI 03: Required fields show ErrorProvider messages
+PASS UI 04: Invalid form sends no new record
+PASS UI 05: Create price is read only
+PASS UI 06: Dialog POST and automatic list refresh
+PASS UI 07: Saved row selected
+PASS UI 08: Common edit dialog loads selected record
+PASS UI 09: Dialog PUT updates fields and keeps timestamp
+PASS UI 10: List shows saved edits without manual refresh
+PASS UI 11: Cancel edit does not persist changes
+PASS UI 12: Cancel creation sends no POST
+PASS UI 13: List refresh after server deletion
+PASS UI 14: Failed save keeps editor open and explains connection error
+PASS UI 15: Failed save preserves entered values
+All 15 UI checks passed.

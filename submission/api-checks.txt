@@ -1,0 +1,35 @@
+PASS 01: Comma and dot decimals accepted
+PASS 02: Required From
+PASS 03: Required To
+PASS 04: Required Content
+PASS 05: Positive Weight
+PASS 06: Positive Width
+PASS 07: Positive Height
+PASS 08: Positive Depth
+PASS 09: Reject weight -1
+PASS 10: Reject weight 1000001
+PASS 11: Reject weight NaN
+PASS 12: Reject weight Infinity
+PASS 13: Reject weight 1e50
+PASS 14: Reject weight abc
+PASS 15: Weight upper boundary accepted
+PASS 16: Optional fields become null
+PASS 17: Negative declared value rejected
+PASS 18: Negative edit price rejected
+PASS 19: Create price is server owned
+PASS 20: Invalid delivery type rejected
+PASS 21: POST Department, server price and timestamp
+PASS 22: GET by id Department preserves data
+PASS 23: POST Courier, server price and timestamp
+PASS 24: GET by id Courier preserves data
+PASS 25: POST ExpressCourier, server price and timestamp
+PASS 26: GET by id ExpressCourier preserves data
+PASS 27: PUT changes fields and preserves CreatedAt
+PASS 28: List reflects PUT
+PASS 29: Server validation maps Weight error
+PASS 30: Rejected PUT leaves saved data unchanged
+PASS 31: Missing record returns 404
+PASS 32: DELETE refreshes server list
+PASS 33: GET deleted record returns 404
+PASS 34: Integration fixtures cleaned, original records preserved
+All 34 checks passed.

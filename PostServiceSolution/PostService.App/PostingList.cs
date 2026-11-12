@@ -1,7 +1,3 @@
-using System.Net;
-using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using PostService.CommonTypes;
 using PostService.Dtos;
 
@@ -9,163 +5,115 @@ namespace PostService.App;
 
 public partial class PostingList : Form
 {
-    private readonly HttpClient _httpClient = new()
-    {
-        BaseAddress = new Uri("http://localhost:5211/"),
-        Timeout = TimeSpan.FromSeconds(10)
-    };
-    private readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        Converters = { new JsonStringEnumConverter() }
-    };
+    private readonly PostServiceApi _api;
     private readonly CancellationTokenSource _lifetime = new();
     private bool _busy;
     private bool _resourcesDisposed;
-
+    private PostingGetDto? Selected => gridPostings.CurrentRow?.DataBoundItem as PostingGetDto;
     public PostingList()
     {
-        InitializeComponent();
-        gridPostings.AutoGenerateColumns = false;
-        UpdateSelection();
+        _api = new PostServiceApi(Environment.GetEnvironmentVariable("POST_SERVICE_URL") ?? "http://localhost:5211/");
+        InitializeComponent(); UpdateSelection();
     }
-
     private async void PostingList_Load(object? sender, EventArgs e) => await LoadPostingsAsync();
-
-    private async void btnRefresh_Click(object? sender, EventArgs e)
+    private async Task LoadPostingsAsync(int? preferredId = null, string? success = null)
     {
-        if (!_busy) await LoadPostingsAsync();
-    }
-
-    private async Task LoadPostingsAsync()
-    {
-        int? selectedId = (gridPostings.CurrentRow?.DataBoundItem as PostingGetDto)?.Id;
-        SetBusy(true);
-        lblStatus.Text = "Завантаження відправлень…";
+        int? id = preferredId ?? Selected?.Id;
+        SetBusy(true); lblStatus.Text = "Завантаження відправлень…";
         try
         {
-            var postings = await _httpClient.GetFromJsonAsync<PostingGetDto[]>("postings", _jsonOptions, _lifetime.Token);
-            if (IsDisposed || Disposing) return;
-            gridPostings.DataSource = postings ?? Array.Empty<PostingGetDto>();
-            gridPostings.ClearSelection();
-            gridPostings.CurrentCell = null;
-            if (selectedId is int id)
-            {
-                foreach (DataGridViewRow row in gridPostings.Rows)
-                    if (row.DataBoundItem is PostingGetDto p && p.Id == id)
-                    {
-                        gridPostings.CurrentCell = row.Cells["colFrom"];
-                        row.Selected = true;
-                        break;
-                    }
-            }
-            lblStatus.Text = $"Відправлень: {postings?.Length ?? 0} · Оновлено о {DateTime.Now:HH:mm:ss}";
+            var postings = await _api.GetAllAsync(_lifetime.Token);
+            if (IsDisposed) return;
+            gridPostings.DataSource = postings; gridPostings.ClearSelection(); gridPostings.CurrentCell = null;
+            foreach (DataGridViewRow row in gridPostings.Rows)
+                if (row.DataBoundItem is PostingGetDto posting && posting.Id == id)
+                {
+                    gridPostings.CurrentCell = row.Cells["colFrom"]; row.Selected = true; break;
+                }
+            lblStatus.ForeColor = Color.FromArgb(60, 89, 113);
+            lblStatus.Text = $"{success}Відправлень: {postings.Length}. Оновлено о {DateTime.Now:HH:mm:ss}."
+                + (postings.Length == 0 ? " Натисніть «Нове відправлення», щоб додати запис." : "");
         }
         catch (OperationCanceledException) when (_lifetime.IsCancellationRequested) { }
-        catch (OperationCanceledException)
-        {
-            ShowLoadError("Сервер не відповів вчасно. Спробуйте натиснути «Оновити».");
-        }
-        catch (HttpRequestException)
-        {
-            ShowLoadError("Не вдалося отримати дані з сервера. Перевірте, чи запущено PostService на http://localhost:5211.");
-        }
-        catch (JsonException)
-        {
-            ShowLoadError("Сервер повернув дані невідомого формату. Перевірте сумісність версій клієнта й сервера.");
-        }
-        finally
-        {
-            if (!IsDisposed && !Disposing) SetBusy(false);
-        }
+        catch (Exception error) when (IsOperationError(error))
+        { ShowError((success is null ? "" : success + "Список не оновлено. ") + OperationError.Describe(error)); }
+        finally { if (!IsDisposed) SetBusy(false); }
     }
-
-    private async void btnDelete_Click(object? sender, EventArgs e)
+    private async void btnRefresh_Click(object? sender, EventArgs e) { if (!_busy) await LoadPostingsAsync(); }
+    private async void btnNew_Click(object? sender, EventArgs e)
     {
         if (_busy) return;
-        if (gridPostings.CurrentRow?.DataBoundItem is not PostingGetDto selectedPosting)
-        {
-            MessageBox.Show(this, "Виберіть відправлення, яке потрібно видалити.", "PostService", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            return;
-        }
-        if (MessageBox.Show(this,
-            $"Видалити відправлення № {selectedPosting.Id}?\n{selectedPosting.From} → {selectedPosting.To}\n\nЦю дію неможливо скасувати.",
-            "Підтвердження видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
-            MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
-
         SetBusy(true);
-        lblStatus.Text = "Видалення відправлення…";
         try
         {
-            using var response = await _httpClient.DeleteAsync($"postings/{selectedPosting.Id}", _lifetime.Token);
-            if (IsDisposed || Disposing) return;
-            if (!response.IsSuccessStatusCode)
-            {
-                var message = response.StatusCode == HttpStatusCode.NotFound
-                    ? "Це відправлення вже відсутнє на сервері. Список буде оновлено."
-                    : $"Не вдалося видалити відправлення. Сервер повернув статус {(int)response.StatusCode}.";
-                MessageBox.Show(this, message, "PostService", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            // Джерело істини — сервер. Повторний GET потрібен і після відповіді 404.
-            await LoadPostingsAsync();
+            using var dialog = new PostingEditor(_api);
+            var result = dialog.ShowDialog(this);
+            // Перевіряємо сервер і після Cancel: запит міг завершитися після обриву зв’язку.
+            await LoadPostingsAsync(dialog.SavedPostingId, result == DialogResult.OK ? "Відправлення створено. " : null);
+        }
+        finally { if (!IsDisposed) SetBusy(false); }
+    }
+    private async void btnEdit_Click(object? sender, EventArgs e)
+    {
+        if (_busy || Selected is not PostingGetDto selected) return;
+        SetBusy(true);
+        try
+        {
+            var current = await _api.GetAsync(selected.Id, _lifetime.Token);
+            if (IsDisposed) return;
+            using var dialog = new PostingEditor(_api, current);
+            var result = dialog.ShowDialog(this);
+            await LoadPostingsAsync(dialog.SavedPostingId ?? current.Id, result == DialogResult.OK ? "Зміни збережено. " : null);
         }
         catch (OperationCanceledException) when (_lifetime.IsCancellationRequested) { }
-        catch (OperationCanceledException)
+        catch (Exception error) when (IsOperationError(error))
         {
-            ShowLoadError("Сервер не відповів вчасно. Оновіть список, щоб перевірити результат видалення.");
+            ShowError(OperationError.Describe(error));
+            if (error is PostServiceApiException { StatusCode: System.Net.HttpStatusCode.NotFound }) await LoadPostingsAsync();
         }
-        catch (HttpRequestException)
-        {
-            ShowLoadError("Не вдалося зв’язатися із сервером. Оновіть список після відновлення з’єднання.");
-        }
-        finally
-        {
-            if (!IsDisposed && !Disposing) SetBusy(false);
-        }
+        finally { if (!IsDisposed) SetBusy(false); }
     }
-
-    private void ShowLoadError(string message)
+    private async void btnDelete_Click(object? sender, EventArgs e)
     {
-        if (IsDisposed || Disposing || _lifetime.IsCancellationRequested) return;
-        lblStatus.Text = "Дані не оновлено. Перевірте з’єднання й натисніть «Оновити».";
-        MessageBox.Show(this, message, "Помилка з’єднання", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        if (_busy || Selected is not PostingGetDto selected) return;
+        if (MessageBox.Show(this, $"Видалити відправлення № {selected.Id}?\n{selected.From} → {selected.To}\n\nЦю дію неможливо скасувати.",
+            "Підтвердження видалення", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
+        SetBusy(true);
+        try { await _api.DeleteAsync(selected.Id, _lifetime.Token); await LoadPostingsAsync(success: "Відправлення видалено. "); }
+        catch (OperationCanceledException) when (_lifetime.IsCancellationRequested) { }
+        catch (Exception error) when (IsOperationError(error))
+        {
+            ShowError(OperationError.Describe(error));
+            if (error is PostServiceApiException { StatusCode: System.Net.HttpStatusCode.NotFound }) await LoadPostingsAsync();
+        }
+        finally { if (!IsDisposed) SetBusy(false); }
     }
-
+    private static bool IsOperationError(Exception e) => e is HttpRequestException or OperationCanceledException or System.Text.Json.JsonException or PostServiceApiException;
+    private void ShowError(string message)
+    {
+        if (IsDisposed || _lifetime.IsCancellationRequested) return;
+        lblStatus.ForeColor = Color.FromArgb(168, 30, 48); lblStatus.Text = message;
+        MessageBox.Show(this, message, "Помилка операції", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+    }
     private void SetBusy(bool busy)
     {
-        _busy = busy;
-        btnRefresh.Enabled = !busy;
-        gridPostings.Enabled = !busy;
-        UseWaitCursor = busy;
-        UpdateSelection();
+        _busy = busy; btnNew.Enabled = btnRefresh.Enabled = gridPostings.Enabled = !busy; UpdateSelection();
     }
-
-    private void gridPostings_SelectionChanged(object? sender, EventArgs e) => UpdateSelection();
-
     private void UpdateSelection()
     {
-        var selected = gridPostings.CurrentRow?.DataBoundItem as PostingGetDto;
-        btnDelete.Enabled = !_busy && selected is not null;
-        lblSelection.Text = selected is null ? "Виберіть рядок для видалення" : $"Вибрано відправлення № {selected.Id}";
+        btnEdit.Enabled = btnDelete.Enabled = !_busy && Selected is not null;
+        lblSelection.Text = Selected is null ? "Виберіть відправлення для редагування або видалення" : $"Вибрано відправлення № {Selected.Id}";
     }
-
     private void gridPostings_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
     {
         if (gridPostings.Columns[e.ColumnIndex].DataPropertyName == nameof(PostingGetDto.DeliveryType) && e.Value is DeliveryType type)
         {
-            e.Value = type switch
-            {
-                DeliveryType.Department => "У відділення",
-                DeliveryType.Courier => "Кур’єр",
-                DeliveryType.ExpressCourier => "Експрес-кур’єр",
-                _ => "Невідомий тип"
-            };
+            e.Value = type switch { DeliveryType.Department => "У відділення", DeliveryType.Courier => "Кур’єр", _ => "Експрес-кур’єр" };
             e.FormattingApplied = true;
         }
+        if (gridPostings.Columns[e.ColumnIndex].DataPropertyName == nameof(PostingGetDto.CreatedAt) && e.Value is DateTime date)
+        { e.Value = date.ToLocalTime().ToString("dd.MM.yyyy HH:mm"); e.FormattingApplied = true; }
     }
-
     protected override void OnFormClosing(FormClosingEventArgs e)
-    {
-        base.OnFormClosing(e);
-        if (!e.Cancel) _lifetime.Cancel();
-    }
+    { base.OnFormClosing(e); if (!e.Cancel) _lifetime.Cancel(); }
 }

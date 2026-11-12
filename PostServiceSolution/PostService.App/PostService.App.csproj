@@ -4,6 +4,8 @@
     <ProjectReference Include="..\PostService.Dtos\PostService.Dtos.csproj" />
     <Compile Update="PostingList.cs"><SubType>Form</SubType></Compile>
     <Compile Update="PostingList.Designer.cs"><DependentUpon>PostingList.cs</DependentUpon></Compile>
+    <Compile Update="PostingEditor.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="PostingEditor.Designer.cs"><DependentUpon>PostingEditor.cs</DependentUpon></Compile>
   </ItemGroup>
 
   <PropertyGroup>

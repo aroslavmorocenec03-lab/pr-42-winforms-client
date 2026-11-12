@@ -7,3 +7,7 @@
 *.db-shm
 *.db-wal
 *.db-journal
+/artifacts/
+/downloads/
+/.test-data/
+/.test-screens/

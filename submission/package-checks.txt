@@ -1,0 +1,5 @@
+PASS: Self-contained Windows x64 server started from published executable.
+PASS: Self-contained Windows Forms client loaded a record through REST API.
+PASS: Delete confirmation displayed id and route; No kept the record.
+PASS: Yes deleted the test record through the client; subsequent GET returned [].
+PASS: ZIP integrity check passed; 631 entries; no .db files; Start.cmd present.

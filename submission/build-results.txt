@@ -1,0 +1,20 @@
+  Определение проектов для восстановления...
+  Восстановлен <repository>\PostServiceSolution\PostService.Models\PostService.Models.csproj (за 150 мс).
+  Восстановлен <repository>\PostServiceSolution\PostService.App\PostService.App.csproj (за 150 мс).
+  Восстановлен <repository>\PostServiceSolution\PostService\PostService.csproj (за 265 мс).
+  Восстановлен <repository>\PostServiceSolution\PostService.DataAccess\PostService.DataAccess.csproj (за 265 мс).
+  Восстановлен <repository>\PostServiceSolution\PostService.BusinessLogic\PostService.BusinessLogic.csproj (за 265 мс).
+  Проектов обновлено для восстановления: 2 из 7.
+  PostService.CommonTypes -> <repository>\PostServiceSolution\PostService.CommonTypes\bin\Debug\net10.0\PostService.CommonTypes.dll
+  PostService.Dtos -> <repository>\PostServiceSolution\PostService.Dtos\bin\Debug\net10.0\PostService.Dtos.dll
+  PostService.Models -> <repository>\PostServiceSolution\PostService.Models\bin\Debug\net10.0\PostService.Models.dll
+  PostService.App -> <repository>\PostServiceSolution\PostService.App\bin\Debug\net10.0-windows\PostService.App.dll
+  PostService.DataAccess -> <repository>\PostServiceSolution\PostService.DataAccess\bin\Debug\net10.0\PostService.DataAccess.dll
+  PostService.BusinessLogic -> <repository>\PostServiceSolution\PostService.BusinessLogic\bin\Debug\net10.0\PostService.BusinessLogic.dll
+  PostService -> <repository>\PostServiceSolution\PostService\bin\Debug\net10.0\PostService.dll
+
+Сборка успешно завершена.
+    Предупреждений: 0
+    Ошибок: 0
+
+Прошло времени 00:00:03.16
