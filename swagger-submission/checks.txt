@@ -1,0 +1,74 @@
+PASS 01: Swagger UI HTML is served
+PASS 02: Local Swagger UI asset /swagger/swagger-ui.css
+PASS 03: Local Swagger UI asset /swagger/swagger-ui-bundle.js
+PASS 04: Local Swagger UI asset /swagger/swagger-ui-standalone-preset.js
+PASS 05: Local Swagger UI asset /swagger/index.js
+PASS 06: OpenAPI JSON is served
+PASS 07: All six original API operations are documented
+PASS 08: Operation names are unique
+PASS 09: GET /postings has a name and description
+PASS 10: GET /postings response statuses are described
+PASS 11: POST /postings has a name and description
+PASS 12: POST JSON request body is described
+PASS 13: POST /postings response statuses are described
+PASS 14: GET /postings/{id} has a name and description
+PASS 15: GET id path parameter is described
+PASS 16: GET /postings/{id} response statuses are described
+PASS 17: PUT /postings/{id} has a name and description
+PASS 18: PUT id path parameter is described
+PASS 19: PUT JSON request body is described
+PASS 20: PUT /postings/{id} response statuses are described
+PASS 21: DELETE /postings/{id} has a name and description
+PASS 22: DELETE id path parameter is described
+PASS 23: DELETE /postings/{id} response statuses are described
+PASS 24: GET / has a name and description
+PASS 25: GET / response statuses are described
+PASS 26: PostingGetDto class and expected 13 properties are present
+PASS 27: PostingGetDto.id has XML-derived documentation
+PASS 28: PostingGetDto.from has XML-derived documentation
+PASS 29: PostingGetDto.to has XML-derived documentation
+PASS 30: PostingGetDto.content has XML-derived documentation
+PASS 31: PostingGetDto.deliveryType has XML-derived documentation
+PASS 32: PostingGetDto.weight has XML-derived documentation
+PASS 33: PostingGetDto.width has XML-derived documentation
+PASS 34: PostingGetDto.height has XML-derived documentation
+PASS 35: PostingGetDto.depth has XML-derived documentation
+PASS 36: PostingGetDto.value has XML-derived documentation
+PASS 37: PostingGetDto.description has XML-derived documentation
+PASS 38: PostingGetDto.price has XML-derived documentation
+PASS 39: PostingGetDto.createdAt has XML-derived documentation
+PASS 40: PostingPostDto class and expected 10 properties are present
+PASS 41: PostingPostDto.from has XML-derived documentation
+PASS 42: PostingPostDto.to has XML-derived documentation
+PASS 43: PostingPostDto.content has XML-derived documentation
+PASS 44: PostingPostDto.deliveryType has XML-derived documentation
+PASS 45: PostingPostDto.weight has XML-derived documentation
+PASS 46: PostingPostDto.width has XML-derived documentation
+PASS 47: PostingPostDto.height has XML-derived documentation
+PASS 48: PostingPostDto.depth has XML-derived documentation
+PASS 49: PostingPostDto.value has XML-derived documentation
+PASS 50: PostingPostDto.description has XML-derived documentation
+PASS 51: PostingPutDto class and expected 12 properties are present
+PASS 52: PostingPutDto.id has XML-derived documentation
+PASS 53: PostingPutDto.from has XML-derived documentation
+PASS 54: PostingPutDto.to has XML-derived documentation
+PASS 55: PostingPutDto.content has XML-derived documentation
+PASS 56: PostingPutDto.deliveryType has XML-derived documentation
+PASS 57: PostingPutDto.weight has XML-derived documentation
+PASS 58: PostingPutDto.width has XML-derived documentation
+PASS 59: PostingPutDto.height has XML-derived documentation
+PASS 60: PostingPutDto.depth has XML-derived documentation
+PASS 61: PostingPutDto.value has XML-derived documentation
+PASS 62: PostingPutDto.description has XML-derived documentation
+PASS 63: PostingPutDto.price has XML-derived documentation
+PASS 64: DeliveryType schema matches JSON string enum serialization
+PASS 65: POST does not expose server-generated fields
+PASS 66: PUT does not expose immutable CreatedAt
+PASS 67: Documented POST returns 201, server price and Location
+PASS 68: Documented GET by id returns saved DTO
+PASS 69: Documented PUT updates data and preserves date
+PASS 70: Business validation returns documented 400 ValidationProblem
+PASS 71: Mismatching PUT id returns 400
+PASS 72: Documented DELETE returns 204 with no body
+PASS 73: GET of deleted record returns documented 404
+All 73 checks passed.

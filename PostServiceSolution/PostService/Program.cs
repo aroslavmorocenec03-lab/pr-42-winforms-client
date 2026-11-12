@@ -5,10 +5,32 @@ using PostService.Mappings;
 using PostService.BusinessLogic;
 using PostService.DataAccess;
 using Microsoft.Data.Sqlite;
+using Microsoft.OpenApi;
+using PostService;
+using PostService.CommonTypes;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls(builder.Configuration["urls"] ?? "http://localhost:5211");
 builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+// SwaggerGen і HTTP JSON мають однаково показувати enum як рядки.
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "PostService — облік поштових відправлень",
+        Version = "v1",
+        Description = "REST API для отримання, створення, редагування та видалення поштових відправлень. "
+            + "Грошові суми вказуються у гривнях, вага — у кілограмах, габарити — у сантиметрах. "
+            + "У JSON десятковий роздільник — крапка."
+    });
+    foreach (var assembly in new[] { typeof(PostingEndpoints).Assembly, typeof(PostingGetDto).Assembly, typeof(DeliveryType).Assembly })
+        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{assembly.GetName().Name}.xml"));
+    options.UseAllOfToExtendReferenceSchemas();
+    options.SupportNonNullableReferenceTypes();
+});
 builder.Services.AddScoped<IPostingService, PostingService>();
 var databasePath = Path.Combine(builder.Environment.ContentRootPath, "PostingDb.db");
 var connectionString = new SqliteConnectionStringBuilder { DataSource = databasePath }.ToString();
@@ -20,33 +42,40 @@ using (var scope = app.Services.CreateScope())
     repository.CreateDb();
 }
 app.UseMiddleware<BusinessExceptionMiddleware>();
-
-app.MapGet("/", () => "Це API поштового клієнта.");
-
-app.MapGet("/postings", (IPostingService service) =>
-    Results.Ok(service.GetAll().Select(PostingMapper.ToPostingGetDto).ToArray()));
-
-app.MapGet("/postings/{id:int}", (int id, IPostingService service) =>
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    var posting = service.Find(id);
-    return posting is null ? Results.NotFound() : Results.Ok(PostingMapper.ToPostingGetDto(posting));
+    options.SwaggerEndpoint("v1/swagger.json", "PostService v1");
+    options.DocumentTitle = "Документація PostService";
+    options.RoutePrefix = "swagger";
+    options.DisplayRequestDuration();
 });
 
-app.MapPost("/postings", (PostingPostDto dto, IPostingService service) =>
-{
-    var model = PostingMapper.ToPosting(dto);
-    var saved = service.Create(model);
-    var result = PostingMapper.ToPostingGetDto(saved);
-    return Results.Created($"/postings/{result.Id}", result);
-});
+app.MapGet("/", PostingEndpoints.Status)
+    .WithName("GetServiceStatus").WithTags("Стан сервісу")
+    .Produces<string>(StatusCodes.Status200OK, "text/plain");
 
-app.MapPut("/postings/{id:int}", (int id, PostingPutDto dto, IPostingService service) =>
-{
-    var updated = service.Update(id, PostingMapper.ToPosting(dto));
-    return updated is null ? Results.NotFound() : Results.Ok(PostingMapper.ToPostingGetDto(updated));
-});
+app.MapGet("/postings", PostingEndpoints.GetAll)
+    .WithName("GetPostings").WithTags("Поштові відправлення")
+    .Produces<PostingGetDto[]>(StatusCodes.Status200OK);
 
-app.MapDelete("/postings/{id:int}", (int id, IPostingService service) =>
-    service.Delete(id) == 0 ? Results.NotFound() : Results.NoContent());
+app.MapGet("/postings/{id:int}", PostingEndpoints.GetById)
+    .WithName("GetPostingById").WithTags("Поштові відправлення")
+    .Produces<PostingGetDto>(StatusCodes.Status200OK).Produces(StatusCodes.Status404NotFound);
+
+app.MapPost("/postings", PostingEndpoints.Create)
+    .WithName("CreatePosting").WithTags("Поштові відправлення")
+    .Accepts<PostingPostDto>("application/json")
+    .Produces<PostingGetDto>(StatusCodes.Status201Created).ProducesValidationProblem();
+
+app.MapPut("/postings/{id:int}", PostingEndpoints.Update)
+    .WithName("UpdatePosting").WithTags("Поштові відправлення")
+    .Accepts<PostingPutDto>("application/json")
+    .Produces<PostingGetDto>(StatusCodes.Status200OK).ProducesValidationProblem()
+    .Produces(StatusCodes.Status404NotFound);
+
+app.MapDelete("/postings/{id:int}", PostingEndpoints.Delete)
+    .WithName("DeletePosting").WithTags("Поштові відправлення")
+    .Produces(StatusCodes.Status204NoContent).Produces(StatusCodes.Status404NotFound);
 
 app.Run();

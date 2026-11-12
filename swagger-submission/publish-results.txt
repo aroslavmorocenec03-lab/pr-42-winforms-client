@@ -1,0 +1,14 @@
+  Определение проектов для восстановления...
+  Восстановлен <repository>\PostServiceSolution\PostService.Dtos\PostService.Dtos.csproj (за 373 мс).
+  Восстановлен <repository>\PostServiceSolution\PostService.CommonTypes\PostService.CommonTypes.csproj (за 366 мс).
+  Восстановлен <repository>\PostServiceSolution\PostService.Models\PostService.Models.csproj (за 373 мс).
+  Восстановлен <repository>\PostServiceSolution\PostService.DataAccess\PostService.DataAccess.csproj (за 393 мс).
+  Восстановлен <repository>\PostServiceSolution\PostService.BusinessLogic\PostService.BusinessLogic.csproj (за 393 мс).
+  Восстановлен <repository>\PostServiceSolution\PostService\PostService.csproj (за 394 мс).
+  PostService.CommonTypes -> <repository>\PostServiceSolution\PostService.CommonTypes\bin\Release\net10.0\PostService.CommonTypes.dll
+  PostService.Models -> <repository>\PostServiceSolution\PostService.Models\bin\Release\net10.0\PostService.Models.dll
+  PostService.Dtos -> <repository>\PostServiceSolution\PostService.Dtos\bin\Release\net10.0\PostService.Dtos.dll
+  PostService.DataAccess -> <repository>\PostServiceSolution\PostService.DataAccess\bin\Release\net10.0\PostService.DataAccess.dll
+  PostService.BusinessLogic -> <repository>\PostServiceSolution\PostService.BusinessLogic\bin\Release\net10.0\PostService.BusinessLogic.dll
+  PostService -> <repository>\PostServiceSolution\PostService\bin\Release\net10.0\win-x64\PostService.dll
+  PostService -> C:\Users\ksvit\Documents\Codex\2026-11-12\d-x20\work\swagger-package\Server\

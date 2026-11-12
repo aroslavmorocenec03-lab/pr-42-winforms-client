@@ -1,0 +1,523 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "PostService — облік поштових відправлень",
+    "description": "REST API для отримання, створення, редагування та видалення поштових відправлень. Грошові суми вказуються у гривнях, вага — у кілограмах, габарити — у сантиметрах. У JSON десятковий роздільник — крапка.",
+    "version": "v1"
+  },
+  "paths": {
+    "/postings": {
+      "get": {
+        "tags": [
+          "Поштові відправлення"
+        ],
+        "summary": "Отримати список поштових відправлень",
+        "description": "Повертає всі збережені відправлення за зростанням Id. Вхідних параметрів немає. Порожня база повертає порожній масив JSON.",
+        "operationId": "GetPostings",
+        "responses": {
+          "200": {
+            "description": "Список поштових відправлень.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PostingGetDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Поштові відправлення"
+        ],
+        "summary": "Створити поштове відправлення",
+        "description": "Приймає PostingPostDto у JSON. Сервер призначає номер, дату створення в UTC та розраховує ціну. Повертає створений запис і заголовок Location.",
+        "operationId": "CreatePosting",
+        "requestBody": {
+          "description": "Тіло JSON з відправником, отримувачем, вмістом, доставкою, вагою, габаритами та необов’язковими цінністю й описом.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PostingPostDto"
+                  }
+                ],
+                "description": "Дані для створення поштового відправлення. Id, CreatedAt і Price встановлює сервер."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Відправлення створено; тіло містить PostingGetDto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostingGetDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некоректний JSON або порушення правил полів; при бізнес помилці повертається ValidationProblem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/postings/{id}": {
+      "get": {
+        "tags": [
+          "Поштові відправлення"
+        ],
+        "summary": "Отримати відправлення за номером",
+        "description": "Завантажує повні дані одного відправлення. Тіло запиту не потрібне.",
+        "operationId": "GetPostingById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Унікальний цілий номер поштового відправлення в адресі запиту.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Повні дані знайденого відправлення.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostingGetDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Відправлення з указаним номером не існує."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Поштові відправлення"
+        ],
+        "summary": "Оновити поштове відправлення",
+        "description": "Повністю замінює змінювані поля запису даними PostingPutDto. Id у JSON має збігатися з id у маршруті. Дата створення зберігається. Ціну передає клієнт, автоматичний перерахунок під час PUT не виконується.",
+        "operationId": "UpdatePosting",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Цілий номер існуючого відправлення в адресі запиту.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "description": "Повний набір полів для оновлення, включно з Id і невід’ємною ціною у гривнях.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PostingPutDto"
+                  }
+                ],
+                "description": "Дані для повного оновлення відправлення. Id має збігатися з параметром маршруту; CreatedAt не передається."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Оновлене відправлення у форматі PostingGetDto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostingGetDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некоректні поля, JSON або невідповідність Id у маршруті й тілі.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Відправлення не існує."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Поштові відправлення"
+        ],
+        "summary": "Видалити поштове відправлення",
+        "description": "Видаляє відправлення з бази. Тіло запиту не потрібне. Успішна відповідь 204 не містить тіла.",
+        "operationId": "DeletePosting",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Цілий номер відправлення, яке потрібно видалити.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Відправлення видалено."
+          },
+          "404": {
+            "description": "Відправлення відсутнє або вже видалене."
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Стан сервісу"
+        ],
+        "summary": "Перевірити доступність PostService",
+        "description": "Повертає текстове повідомлення про доступність API. Вхідних параметрів немає.",
+        "operationId": "GetServiceStatus",
+        "responses": {
+          "200": {
+            "description": "Сервіс доступний.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DeliveryType": {
+        "enum": [
+          "Department",
+          "Courier",
+          "ExpressCourier"
+        ],
+        "type": "string",
+        "description": "Дозволені способи доставки. У JSON передаються назвами рядків."
+      },
+      "HttpValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "additionalProperties": { }
+      },
+      "PostingGetDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Унікальний номер відправлення, призначений сервером.",
+            "format": "int32",
+            "example": 1
+          },
+          "from": {
+            "type": "string",
+            "description": "Відправник або адреса відправлення. Обов’язковий непорожній рядок.",
+            "example": "Київ, відділення № 3"
+          },
+          "to": {
+            "type": "string",
+            "description": "Отримувач або адреса доставки. Обов’язковий непорожній рядок.",
+            "example": "Львів, відділення № 7"
+          },
+          "content": {
+            "type": "string",
+            "description": "Вміст відправлення. Обов’язковий непорожній рядок.",
+            "example": "Книги"
+          },
+          "deliveryType": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              }
+            ],
+            "description": "Спосіб доставки: Department — у відділення; Courier — кур’єром; ExpressCourier — експрес кур’єром.",
+            "example": "Department"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Вага в кілограмах. Скінченне число більше нуля та не більше 1000000.",
+            "format": "float",
+            "example": 2.5
+          },
+          "width": {
+            "type": "number",
+            "description": "Ширина в сантиметрах. Скінченне число більше нуля.",
+            "format": "float",
+            "example": 20.5
+          },
+          "height": {
+            "type": "number",
+            "description": "Висота в сантиметрах. Скінченне число більше нуля.",
+            "format": "float",
+            "example": 15.25
+          },
+          "depth": {
+            "type": "number",
+            "description": "Глибина в сантиметрах. Скінченне число більше нуля.",
+            "format": "float",
+            "example": 3
+          },
+          "value": {
+            "type": "number",
+            "description": "Оголошена цінність у гривнях. Необов’язкове невід’ємне скінченне число; null — не вказана.",
+            "format": "float",
+            "nullable": true,
+            "example": 100.5
+          },
+          "description": {
+            "type": "string",
+            "description": "Додатковий опис або вказівки щодо обробки. Необов’язковий рядок, допускає null.",
+            "nullable": true,
+            "example": "Не згинати"
+          },
+          "price": {
+            "type": "number",
+            "description": "Вартість доставки у гривнях. При створенні розраховується сервером; у PUT задається невід’ємним скінченним числом.",
+            "format": "float",
+            "example": 65
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Дата та час створення в UTC у форматі ISO 8601. Визначає сервер; під час редагування не змінюється.",
+            "format": "date-time",
+            "example": "2026-11-12T12:00:00Z"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Повні дані збереженого поштового відправлення у відповіді сервера."
+      },
+      "PostingPostDto": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Відправник або адреса відправлення. Обов’язковий непорожній рядок.",
+            "example": "Київ, відділення № 3"
+          },
+          "to": {
+            "type": "string",
+            "description": "Отримувач або адреса доставки. Обов’язковий непорожній рядок.",
+            "example": "Львів, відділення № 7"
+          },
+          "content": {
+            "type": "string",
+            "description": "Вміст відправлення. Обов’язковий непорожній рядок.",
+            "example": "Книги"
+          },
+          "deliveryType": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              }
+            ],
+            "description": "Спосіб доставки: Department — у відділення; Courier — кур’єром; ExpressCourier — експрес кур’єром.",
+            "example": "Department"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Вага в кілограмах. Скінченне число більше нуля та не більше 1000000.",
+            "format": "float",
+            "example": 2.5
+          },
+          "width": {
+            "type": "number",
+            "description": "Ширина в сантиметрах. Скінченне число більше нуля.",
+            "format": "float",
+            "example": 20.5
+          },
+          "height": {
+            "type": "number",
+            "description": "Висота в сантиметрах. Скінченне число більше нуля.",
+            "format": "float",
+            "example": 15.25
+          },
+          "depth": {
+            "type": "number",
+            "description": "Глибина в сантиметрах. Скінченне число більше нуля.",
+            "format": "float",
+            "example": 3
+          },
+          "value": {
+            "type": "number",
+            "description": "Оголошена цінність у гривнях. Необов’язкове невід’ємне скінченне число; null — не вказана.",
+            "format": "float",
+            "nullable": true,
+            "example": 100.5
+          },
+          "description": {
+            "type": "string",
+            "description": "Додатковий опис або вказівки щодо обробки. Необов’язковий рядок, допускає null.",
+            "nullable": true,
+            "example": "Не згинати"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Дані для створення поштового відправлення. Id, CreatedAt і Price встановлює сервер."
+      },
+      "PostingPutDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Унікальний номер відправлення. Для PUT має збігатися з id в адресі запиту.",
+            "format": "int32",
+            "example": 1
+          },
+          "from": {
+            "type": "string",
+            "description": "Відправник або адреса відправлення. Обов’язковий непорожній рядок.",
+            "example": "Київ, відділення № 3"
+          },
+          "to": {
+            "type": "string",
+            "description": "Отримувач або адреса доставки. Обов’язковий непорожній рядок.",
+            "example": "Львів, відділення № 7"
+          },
+          "content": {
+            "type": "string",
+            "description": "Вміст відправлення. Обов’язковий непорожній рядок.",
+            "example": "Книги"
+          },
+          "deliveryType": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryType"
+              }
+            ],
+            "description": "Спосіб доставки: Department — у відділення; Courier — кур’єром; ExpressCourier — експрес кур’єром.",
+            "example": "Department"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Вага в кілограмах. Скінченне число більше нуля та не більше 1000000.",
+            "format": "float",
+            "example": 2.5
+          },
+          "width": {
+            "type": "number",
+            "description": "Ширина в сантиметрах. Скінченне число більше нуля.",
+            "format": "float",
+            "example": 20.5
+          },
+          "height": {
+            "type": "number",
+            "description": "Висота в сантиметрах. Скінченне число більше нуля.",
+            "format": "float",
+            "example": 15.25
+          },
+          "depth": {
+            "type": "number",
+            "description": "Глибина в сантиметрах. Скінченне число більше нуля.",
+            "format": "float",
+            "example": 3
+          },
+          "value": {
+            "type": "number",
+            "description": "Оголошена цінність у гривнях. Необов’язкове невід’ємне скінченне число; null — не вказана.",
+            "format": "float",
+            "nullable": true,
+            "example": 100.5
+          },
+          "description": {
+            "type": "string",
+            "description": "Додатковий опис або вказівки щодо обробки. Необов’язковий рядок, допускає null.",
+            "nullable": true,
+            "example": "Не згинати"
+          },
+          "price": {
+            "type": "number",
+            "description": "Вартість доставки у гривнях. При створенні розраховується сервером; у PUT задається невід’ємним скінченним числом.",
+            "format": "float",
+            "example": 65
+          }
+        },
+        "additionalProperties": false,
+        "description": "Дані для повного оновлення відправлення. Id має збігатися з параметром маршруту; CreatedAt не передається."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Поштові відправлення"
+    },
+    {
+      "name": "Стан сервісу"
+    }
+  ]
+}
