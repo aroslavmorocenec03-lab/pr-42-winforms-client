@@ -1,3 +1,0 @@
-Project reference(s)
---------------------
-..\PostService.Dtos\PostService.Dtos.csproj
