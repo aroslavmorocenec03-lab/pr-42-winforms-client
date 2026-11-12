@@ -1,3 +1,0 @@
-PostService.App/1.0.0
-PostService.CommonTypes/1.0.0
-PostService.Dtos/1.0.0

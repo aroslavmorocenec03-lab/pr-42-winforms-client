@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='utf-8'?>
+<project name="Library Search Module" company="" webLink="" version="3.3.3323" locale="uk_UA" view-date="2026-11-16" view-index="0" gantt-divider-location="820" resource-divider-location="400">
+    <description>ПР-54. Модуль пошуку книжок. План: 16.11.2026–16.12.2026, фінальна контрольна точка 17.12.2026. Пн–Пт, 8 год/день. Завдання 7.3: оцінка 0,5 дня; у GanttProject вікно 1 день і навантаження 50%. Усі залежності FS без затримки.</description>
+    <view id="gantt-chart" zooming-state="default:5">
+        <field id="tpd3" name="Назва" width="400" order="0" />
+        <field id="tpd4" name="Початок" width="125" order="1" />
+        <field id="tpd5" name="Завершення" width="125" order="2" />
+        <field id="tpd6" name="Дні GP" width="75" order="3" />
+        <field id="tpc0" name="Оцінка, дні" width="85" order="4" />
+        <option id="taskLabelRight" value="none" />
+    </view>
+    <calendars>
+        <day-types>
+            <day-type id="0" />
+            <day-type id="1" />
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1" />
+            <only-show-weekends value="false" />
+            <overriden-day-types />
+            <days />
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon" />
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon" />
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon" />
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text" />
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date" />
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date" />
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int" />
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int" />
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text" />
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text" />
+            <taskproperty id="tpc0" name="Оцінка, дні" type="custom" valuetype="double" defaultvalue="0" />
+        </taskproperties>
+        <task id="1" name="1. Формування вимог" color="#203b56" meeting="false" start="2026-11-16" duration="3" complete="0" expand="true">
+            <task id="10" name="1.1 Визначення функціональних вимог" color="#639bbb" meeting="false" start="2026-11-16" duration="2" complete="0" expand="true">
+                <notes>Поля пошуку, фільтри, кнопки, список результатів.</notes>
+                <customproperty taskproperty-id="tpc0" value="2" />
+                <depend id="11" type="2" difference="0" hardness="Strong" />
+                <depend id="12" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="11" name="1.2 Узгодження нефункціональних вимог" color="#639bbb" meeting="false" start="2026-11-18" duration="1" complete="0" expand="true">
+                <notes>Час відгуку, зручність використання, безпека доступу.</notes>
+                <customproperty taskproperty-id="tpc0" value="1" />
+                <depend id="28" type="2" difference="0" hardness="Strong" />
+            </task>
+        </task>
+        <task id="28" name="M1. Завершено формування вимог" color="#000000" meeting="true" start="2026-11-19" duration="0" complete="0" expand="true">
+            <depend id="13" type="2" difference="0" hardness="Strong" />
+        </task>
+        <task id="2" name="2. Проєктування" color="#203b56" meeting="false" start="2026-11-18" duration="3" complete="0" expand="true">
+            <task id="12" name="2.1 Створення прототипу інтерфейсу" color="#639bbb" meeting="false" start="2026-11-18" duration="2" complete="0" expand="true">
+                <notes>Макети пошуку та перегляду результатів.</notes>
+                <customproperty taskproperty-id="tpc0" value="2" />
+                <depend id="29" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="13" name="2.2 Структура даних і data contract" color="#639bbb" meeting="false" start="2026-11-19" duration="2" complete="0" expand="true">
+                <notes>Поля моделей, формати запитів і відповідей; погодження архітектури.</notes>
+                <customproperty taskproperty-id="tpc0" value="2" />
+                <depend id="14" type="2" difference="0" hardness="Strong" />
+                <depend id="19" type="2" difference="0" hardness="Strong" />
+            </task>
+        </task>
+        <task id="29" name="M2. Затверджено дизайн інтерфейсу" color="#000000" meeting="true" start="2026-11-20" duration="0" complete="0" expand="true">
+            <depend id="14" type="2" difference="0" hardness="Strong" />
+            <depend id="19" type="2" difference="0" hardness="Strong" />
+        </task>
+        <task id="3" name="3. Розробка фронтенду" color="#203b56" meeting="false" start="2026-11-23" duration="8" complete="0" expand="true">
+            <task id="14" name="3.1 Головний екран пошуку книжок" color="#639bbb" meeting="false" start="2026-11-23" duration="3" complete="0" expand="true">
+                <notes>Форма пошуку та відображення результатів.</notes>
+                <customproperty taskproperty-id="tpc0" value="3" />
+                <depend id="15" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="15" name="3.2 Сторінка детального перегляду книжки" color="#639bbb" meeting="false" start="2026-11-26" duration="2" complete="0" expand="true">
+                <notes>Опис, автор і доступність книжки.</notes>
+                <customproperty taskproperty-id="tpc0" value="2" />
+                <depend id="16" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="16" name="3.3 Інтеграція через REST API" color="#639bbb" meeting="false" start="2026-12-01" duration="2" complete="0" expand="true">
+                <notes>Обмін даними за контрактом після готовності клієнта, API та БД.</notes>
+                <customproperty taskproperty-id="tpc0" value="2" />
+                <depend id="30" type="2" difference="0" hardness="Strong" />
+            </task>
+        </task>
+        <task id="4" name="4. Розробка бекенду" color="#203b56" meeting="false" start="2026-11-23" duration="6" complete="0" expand="true">
+            <task id="17" name="4.1 API для пошуку книжок" color="#639bbb" meeting="false" start="2026-11-24" duration="3" complete="0" expand="true">
+                <notes>Пошук за назвою, автором і жанром.</notes>
+                <customproperty taskproperty-id="tpc0" value="3" />
+                <depend id="18" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="18" name="4.2 Ендпойнт детальної інформації" color="#639bbb" meeting="false" start="2026-11-27" duration="2" complete="0" expand="true">
+                <notes>Отримання повних даних про книжку.</notes>
+                <customproperty taskproperty-id="tpc0" value="2" />
+                <depend id="16" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="19" name="4.3 Підключення БД і логіка запитів" color="#639bbb" meeting="false" start="2026-11-23" duration="1" complete="0" expand="true">
+                <notes>Підключення БД, таблиці, тестові дані; передує реалізації API.</notes>
+                <customproperty taskproperty-id="tpc0" value="1" />
+                <depend id="17" type="2" difference="0" hardness="Strong" />
+                <depend id="30" type="2" difference="0" hardness="Strong" />
+            </task>
+        </task>
+        <task id="30" name="M3. Завершено розробку бекенду та фронтенду" color="#000000" meeting="true" start="2026-12-03" duration="0" complete="0" expand="true">
+            <depend id="20" type="2" difference="0" hardness="Strong" />
+        </task>
+        <task id="5" name="5. Тестування" color="#203b56" meeting="false" start="2026-12-03" duration="4" complete="0" expand="true">
+            <task id="20" name="5.1 Перевірка функціональності пошуку" color="#639bbb" meeting="false" start="2026-12-03" duration="2" complete="0" expand="true">
+                <notes>Основні сценарії пошуку та відображення результатів.</notes>
+                <customproperty taskproperty-id="tpc0" value="2" />
+                <depend id="21" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="21" name="5.2 Тестування продуктивності" color="#639bbb" meeting="false" start="2026-12-07" duration="1" complete="0" expand="true">
+                <notes>Час відповіді, швидкість завантаження і стабільність.</notes>
+                <customproperty taskproperty-id="tpc0" value="1" />
+                <depend id="22" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="22" name="5.3 Перевірка взаємодії клієнта і сервера" color="#639bbb" meeting="false" start="2026-12-08" duration="1" complete="0" expand="true">
+                <notes>Коректність даних між фронтендом і бекендом.</notes>
+                <customproperty taskproperty-id="tpc0" value="1" />
+                <depend id="31" type="2" difference="0" hardness="Strong" />
+            </task>
+        </task>
+        <task id="31" name="M4. Успішно пройдено тестування" color="#000000" meeting="true" start="2026-12-09" duration="0" complete="0" expand="true">
+            <depend id="23" type="2" difference="0" hardness="Strong" />
+        </task>
+        <task id="6" name="6. Виправлення помилок" color="#203b56" meeting="false" start="2026-12-09" duration="3" complete="0" expand="true">
+            <task id="23" name="6.1 Усунення знайдених дефектів" color="#639bbb" meeting="false" start="2026-12-09" duration="2" complete="0" expand="true">
+                <notes>Виправлення помилок у коді та логіці.</notes>
+                <customproperty taskproperty-id="tpc0" value="2" />
+                <depend id="24" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="24" name="6.2 Повторне тестування виправлень" color="#639bbb" meeting="false" start="2026-12-11" duration="1" complete="0" expand="true">
+                <notes>Регресійна перевірка усунених дефектів.</notes>
+                <customproperty taskproperty-id="tpc0" value="1" />
+                <depend id="25" type="2" difference="0" hardness="Strong" />
+            </task>
+        </task>
+        <task id="7" name="7. Поставка продукту" color="#203b56" meeting="false" start="2026-12-14" duration="3" complete="0" expand="true">
+            <task id="25" name="7.1 Деплой на сервер бібліотеки" color="#639bbb" meeting="false" start="2026-12-14" duration="1" complete="0" expand="true">
+                <notes>Розгортання модуля на сервері замовника.</notes>
+                <customproperty taskproperty-id="tpc0" value="1" />
+                <depend id="26" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="26" name="7.2 Перевірка в реальному середовищі" color="#639bbb" meeting="false" start="2026-12-15" duration="1" complete="0" expand="true">
+                <notes>Перевірка роботи на сервері бібліотеки.</notes>
+                <customproperty taskproperty-id="tpc0" value="1" />
+                <depend id="27" type="2" difference="0" hardness="Strong" />
+            </task>
+            <task id="27" name="7.3 Передача рішення клієнту (0,5 дня)" color="#639bbb" meeting="false" start="2026-12-16" duration="1" complete="0" expand="true">
+                <notes>Презентація і приймання. Оцінка за умовою: 0,5 дня = 4 години. Вікно GanttProject: 1 день, завантаження менеджера: 50%.</notes>
+                <customproperty taskproperty-id="tpc0" value="0.5" />
+                <depend id="32" type="2" difference="0" hardness="Strong" />
+            </task>
+        </task>
+        <task id="32" name="M5. Поставка продукту клієнту" color="#000000" meeting="true" start="2026-12-17" duration="0" complete="0" expand="true" />
+    </tasks>
+    <resources>
+        <resource id="0" name="Аналітик" function="0" contacts="" phone="" />
+        <resource id="1" name="Дизайнер" function="1" contacts="" phone="" />
+        <resource id="2" name="Фронтенд-розробник" function="2" contacts="" phone="" />
+        <resource id="3" name="Бекенд-розробник" function="3" contacts="" phone="" />
+        <resource id="4" name="Тестувальник" function="4" contacts="" phone="" />
+        <resource id="5" name="Менеджер проєкту" function="5" contacts="" phone="" />
+    </resources>
+    <allocations>
+        <allocation task-id="10" resource-id="0" function="0" responsible="true" load="100.0" />
+        <allocation task-id="11" resource-id="0" function="0" responsible="true" load="100.0" />
+        <allocation task-id="11" resource-id="5" function="5" responsible="false" load="100.0" />
+        <allocation task-id="12" resource-id="1" function="1" responsible="true" load="100.0" />
+        <allocation task-id="13" resource-id="0" function="0" responsible="true" load="100.0" />
+        <allocation task-id="13" resource-id="3" function="3" responsible="false" load="100.0" />
+        <allocation task-id="14" resource-id="2" function="2" responsible="true" load="100.0" />
+        <allocation task-id="15" resource-id="2" function="2" responsible="true" load="100.0" />
+        <allocation task-id="16" resource-id="2" function="2" responsible="true" load="100.0" />
+        <allocation task-id="16" resource-id="3" function="3" responsible="false" load="100.0" />
+        <allocation task-id="17" resource-id="3" function="3" responsible="true" load="100.0" />
+        <allocation task-id="18" resource-id="3" function="3" responsible="true" load="100.0" />
+        <allocation task-id="19" resource-id="3" function="3" responsible="true" load="100.0" />
+        <allocation task-id="20" resource-id="4" function="4" responsible="true" load="100.0" />
+        <allocation task-id="21" resource-id="4" function="4" responsible="true" load="100.0" />
+        <allocation task-id="22" resource-id="4" function="4" responsible="true" load="100.0" />
+        <allocation task-id="22" resource-id="2" function="2" responsible="false" load="100.0" />
+        <allocation task-id="23" resource-id="2" function="2" responsible="true" load="100.0" />
+        <allocation task-id="23" resource-id="3" function="3" responsible="false" load="100.0" />
+        <allocation task-id="24" resource-id="4" function="4" responsible="true" load="100.0" />
+        <allocation task-id="25" resource-id="3" function="3" responsible="true" load="100.0" />
+        <allocation task-id="25" resource-id="5" function="5" responsible="false" load="100.0" />
+        <allocation task-id="26" resource-id="4" function="4" responsible="true" load="100.0" />
+        <allocation task-id="27" resource-id="5" function="5" responsible="true" load="50.0" />
+    </allocations>
+    <vacations />
+    <previous />
+    <roles roleset-name="Default" />
+    <roles>
+        <role id="0" name="Аналітик" />
+        <role id="1" name="Дизайнер" />
+        <role id="2" name="Фронтенд-розробник" />
+        <role id="3" name="Бекенд-розробник" />
+        <role id="4" name="Тестувальник" />
+        <role id="5" name="Менеджер проєкту" />
+    </roles>
+</project>

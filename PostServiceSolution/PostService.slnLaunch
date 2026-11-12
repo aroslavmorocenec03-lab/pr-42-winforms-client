@@ -1,9 +1,0 @@
-[
-  {
-    "Name": "PostService — Server and Client",
-    "Projects": [
-      { "Path": "PostService\\PostService.csproj", "Action": "Start" },
-      { "Path": "PostService.App\\PostService.App.csproj", "Action": "Start" }
-    ]
-  }
-]
